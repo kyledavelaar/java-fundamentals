@@ -1,0 +1,20 @@
+
+USE PARENTHESIS TO CAST
+  Animal a = new Dog();
+  Dog d = (Animal) a;
+  d.speak();
+
+
+DOWNCASTING
+  - casting down to a more specific level in the inheritance chain
+  - not always allowed b/c parent super class most likely does not have all the methods the the sub class has so when you try to call those methods in the sub class you'll get an error
+
+
+UPCASTING
+  - casting to the super class or a more generic level in the inheritance chain
+  - always allowed because super classes are guaranteed to have all the methods the sub class has
+
+
+class Dog extends Animal implements Pet {
+  // a dog here does not have to implement all the pet methods if that is already done in the Animal class
+}

@@ -1,0 +1,8 @@
+instance variables:
+  - given default values if not provided, meaning can't be accessed outside the package
+
+local variable (variable inside a method)
+  - must be initialized with a value (assigned a value) before used
+  - is on the stack but not the heap, (unless it is inside an object, b/c then it is a reference variable and objects are always on the heap)
+
+

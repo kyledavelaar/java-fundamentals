@@ -1,0 +1,19 @@
+
+
+(like methods and constructors) initialization blocks are another place you can put code that performs operations
+
+static initialization blocks (run when code first loaded)
+
+
+instance initialization block (run when class instantiated)
+
+class SmallInt {
+  static int x;
+  int y;
+
+  static { x = 7 }; // static init block
+  { y = 8 }; // instance init block
+}
+
+
+They run after the call to super()

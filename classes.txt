@@ -1,0 +1,109 @@
+GENERAL NOTES
+  - this. is implied in java so when calling class method you can just call it.  Don't need this.callClassMethod().  can just type callClassMethod();
+  - can only be public or default access
+
+
+CLASS FILE RULES
+  - only one public class per file
+  - if public class, it must be same name as file name
+  - if class is part of a package, the package statement must be first line of code before any other imports
+  - package statements apply to all classes in that file, i.e. can't have many classes in the same file in multiple packages
+  - files with no public class can have any file name (does not have to be same as the class name)
+
+
+ACCESS MODIFIERS (see chart on page 42)
+  - default (no modifier used)
+    - class can only be seen by classes in the same package
+    - method/variable can be accessed by subclasses(but only if those classes are in the same package)
+  - public
+  - private
+    - cannot be used on classes
+    - method/variable can only be used inside this class (not subclasses)
+  - protected
+    - cannot be used on classes
+    - method/variable can be accessed in a subclass (even if both classes are not in the same package)
+    - can't access it by instantiating class and calling it on that instantiation (i.e. can only be accessed through inheritance)
+  - local variables cannot have access modifiers
+    class Foo {
+      void doStuff() {
+        private int x = 7; // BAD!  cannot add 'private' here the only thing you could put as a modifier is 'final'
+        this.doMore(x);
+      }
+    }
+
+
+NON-ACCESS MODIFIERS
+  - strictfp
+    - forces floating points to adhear to a certain standard
+  - final:
+    - cannot subclass(extend) this class
+  - abstract:
+    - can never be instantiated (so it will always be a super class)
+    - methods defined in abstract class have no {}.
+      - public abstract void goFast();
+    - if any of the methods in a class are abstract, the class must also be declared abstract
+  - synchronized:
+    - accessible by only one thread at a time
+    - can only be applied to methods
+  - native:
+    - method implemented in other code/language, like C.  And cannot be changed.
+  - static:
+    - belongs to a type, not an instance.  class static methods don't need the class to be instantiated to be used.  And when you instantiate the class, you are not creating a new method each time.  Since it is static it is only created once for all instantiations of the class.
+
+
+INTERFACE
+  - 100% abstract class
+  - even if you don't define methods inside as abstract, the compiler will make them abstract
+  - all interface methods must be abstract and public
+  - the implementing sub-class must use all the interface methods and declare them as public
+  - all variables must be public, static, and final (meaning they are constants that can never change)
+  - an interface can extend an interface
+  - an interface cannot implement an interface
+  - an interface cannot extend a class
+  - an interface can only extend an interface
+  - an interface can extend multiple interfaces!
+  - interface methods are always public
+  - interface method cannot be static b/c they define instance methods
+  - a class can implement multiple interfaces
+    - public class Ball implements Runnable, Bounceable, Serializable, Runnable {}
+  - subclassing (extending) defines who you are, while implementing defines what methods you can call (what you can do / what role you play)
+
+ABSTRACT CLASSES
+  - don't need to implement methods defined in interfaces
+  - only methods defined as 'abstract' must be implemented by sub classes
+
+
+ENCAPSULATION
+  - keep instance variables private; don't allow myInstantiatedClass.cash = 10;
+  - make public accessor methods and force calling those methods to get access to the instance variables getters/setters
+  - getters/setters allow you to create an API that can change its internals later without breaking all the other code that is using your API.  For example initially you could just return the value with a getter but in the future you could also add restrictions on how many times you can get it for example.
+
+HEAP AND REFERENCE VARIABLES:
+  - For a single class there may be multiple reference variables on the heap, for example
+
+    public class PlayerPiece extends GameShape implements Animatable  {}
+
+    PlayerPiece pp = new PlayerPiece();
+    Object o = pp;
+    GameShape gs = pp;
+    Animatable a = pp;
+
+  In this example above there is one object (an instance of PlayerPiece) but there are four reference variables on the heap, all referring to that one object.
+
+
+  - can use superclass as an instance type but be careful
+    class Animal {
+      public void eat() {};
+    }
+    class Horse extends Animal {
+      public void eat() {};
+      public void buck() {};
+    }
+
+    Animal myHorse = new Horse();
+    myHorse.buck() // with throw error b/c Animal reference doesn't have a buck method.  If wanted to call buck method you'd have to use Horse myHorse = new Horse();
+
+
+POLYMORPHISM
+  - use generic reference variable types to refer to specific object types
+    Animal myDog = new Dog();

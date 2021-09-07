@@ -1,0 +1,55 @@
+
+
+- static methods can't access non-static variables or methods
+- static methods can access variables/methods if they are also static
+- static methods/variables are only created once, all instances share them
+  - so they are good for constant variables that never change between all instances
+  - a method that keeps track of how many instances are created
+- public static void main(String [] args)
+  - it is a static method so that the JVM doesn't have to create an instance of it to run your code
+  - since main is static it also means we can't access instance variables from there
+- don't need an instance to access static methods
+
+class Frog {
+  static int frogCount = 0;
+  public Frog() {  // constructor
+    frogCount += 1;
+  }
+}
+
+- in Java can access frogCount two ways:
+  - Frog.frogCount;
+
+  // second way is odd b/c it looks like an instance variable but it is not!  All static rules still apply to this variable
+  - Frog f = new Frog();
+    int numberOfFrogs = f.frogCount;
+
+
+
+- static methods can't be overridden, can be "redefined" but not overridden
+  class Animal {
+    static void doStuff() {
+      System.out.println("a ");
+    }
+  }
+
+  class Dog extends Animal {
+    static void doStuff() {
+      System.out.println("d ");
+    }
+
+    public static void main(String [] args) {
+      Animal [] a = { new Animal(), new Dog(), new Animal() };
+      for (int i = 0; i < a.length; i ++) {
+        a[i].doStuff(); // can think of this as Animal.doStuff(); b/c Animal the type
+      }
+      Dog.doStuff();
+    }
+  }
+  // logs -> a a a d
+
+
+
+
+
+

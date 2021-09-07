@@ -1,0 +1,77 @@
+VAR ARGS
+  - can pass any number of arguments into a function
+  - void doStuff(int... args) {}
+  - var arg must be last argument
+    - void doStuff(char myChar, int... args){}
+
+
+METHOD OVERRIDING
+  - overriding method can't have more restrictive access than the method being overridden
+  - access can be less restrictive
+  - arguments must match original (if not you've overloaded)
+  - return type must be the same or a subtype (a child class when original was the parent class)
+  - can't throw exceptions that are new or broader than the ones defined in the original method
+  - can't override static or final methods
+  - if superclass has an exception in the method, the overriding method must also have that exception
+
+
+METHOD OVERLOADING
+  - must pass different arguments
+  - can't just have a different return type
+  - can also have a different return type
+  - can change access modifier
+  - can declare broader checked exceptions
+  - when pass objects to overloaded methods the reference type not the object type determines which overridden version to call.  for example
+    class Animal {}
+    class Horse extends Animal {}
+    class UseAnimals {
+      public void doStuff(Animal a) {
+        System.out.println("Animal Version");
+      }
+      public void doStuff(Horse a) {
+        System.out.println("Horse Version);
+      }
+      public static void main(String [] args) {
+        UseAnimals ua = new UserAnimals();
+        Animal a = new Animal();
+        Animal h = new Horse(); // note the reference type of Animal!
+        ua.doStuff(a);
+        ua.doStuff(h); // prints out "Animal Version"
+      }
+    }
+
+OVERRIDDEN / OVERLOADED SUMMARY:
+    - which OVERRIDDEN version of the method to call is determined at RUNTIME and based on OBJECT type
+    - which OVERLOADED version of method to call is determined at COMPILE and based on REFERENCE type
+
+SUPER
+  - can access super classes method by super.mySuperClassMethod
+  - but can't go back more than one level.  For example can't do super.super.mySuperClassMethod
+
+
+WHAT CAN RETURN FROM METHODS
+  - null is an object so can return null
+    public Object myMethod() { return null };
+  - char is compatible with int so this is allowed:
+    public int myMethod() {
+      char s = 'c';
+      return s;
+    };
+  - if you can cast to another primitive, you can return it
+    public int myMethod() {
+      float f = 12.5f;
+      return (int) f;
+    }
+  - an array is an object so:
+    public Object myMethod() {
+      int[] n = {1,2,3};
+      return n;
+    }
+  - Any class that is an instanceof something else can be returned.  Below bear is an instanceof an animal so it is allowed to be returned.  It is a subtype
+    public abstract class Animal {};
+    public class Bear extends Animal{};
+    public class Test {
+      public Animal myMethod() {
+        return new Bear();
+      }
+    }

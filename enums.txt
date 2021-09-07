@@ -1,0 +1,14 @@
+
+- can't declare them in a method
+- enums outside of classes can only be public
+
+
+enum CoffeeSize = { LARGE, MEDIUM, SMALL };
+
+CoffeeSize cs = CoffeeSize.LARGE;
+
+cs.values(); // returns array of enums values
+
+can add values to the enums like this:
+  LARGE(12);
+  MEDIUM(8, 'lid size med')  // can accept multiple arguments too and of different types

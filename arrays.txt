@@ -1,0 +1,21 @@
+
+Arrays:
+  - all same type
+  - can't include size of array in declaration
+    - when you instantiate an array then the space allocation is made
+
+  int[] myArray;
+
+  multi-dimensional:
+    String[] [] managerName;  (2 dimensional)
+    String[] [] [] occupantName; (3 dimensional)
+
+
+java.util.*
+
+HashMap
+
+ArrayList
+
+TreeSet
+

@@ -1,0 +1,73 @@
+
+
+
+- objects are constructed
+- every new object, a constructor is invoked
+
+class Foo {
+  int size;
+  String name;
+  // this is the constructor
+  protected Foo(int size, String name) {
+    this.name = name;
+    this.size = size;
+  }
+}
+
+- can't be static since they need to be instantiated
+- can't be abstract or final b/c can't be overridden
+
+- calling constructor in sub class also calls constructors in all super classes
+
+RULES OF CONSTRUCTORS
+  - can use any access modifier including private, private means only code within the class can instantiate an object of that type
+  -  must have same name as class defined in
+  - can never have a return type (if there is one, it is a method, not a constructor)
+  - if you don't have a constructor, a default one will automatically be generated for you
+  - default constructor is always a no arg constructor
+  - every constructor has as its first statement either
+    - an overloaded constructor --> this();
+    - or a call to super class constructor --> super();
+  - if you type a constructor but don't call this() or super() the compiler will call super() for you with no args
+  - super() constructor must run first before accessing instance methods/variables
+  - only static variables/methods can be accessed as part of call to this() or super()
+  - interfaces do not have constructors, but abstract classes do, interfaces are not part of an object's inheritance tree
+  - can't call a constructor from within a method
+  - if your super class has a constructor that requires arguments, you must type super() in your sub class with the appropriate arguments
+    class Animal {
+      Animal (String name);
+    }
+    class Horse extends Animal {
+      Horse() {
+        super(); // bad won't work
+      }
+    }
+    class Horse extends Animal {} // can't do this either b/c default constructor added with no args passed to super
+  - constructors are never inherited, they aren't methods, thus they can't be overridden, but they can be overloaded
+    class Foo {
+      Foo(){};
+      Foo(String s) {}
+    }
+  - overloaded constructors allow for clients to instantiate multiple objects of your class
+    class Animal {
+      String name;
+      Animal(String name) {
+        this.name = name;
+      }
+      Animal() {
+        this(makeRandomName()); // this() always means calling another constructor in the class
+      }
+      static String makeRandomName() {
+        int x = (int) (Math.random() * 2);
+        String name = new String[] {"Bill", "mario"}[x];
+        return name;
+      }
+      public static void main(String [] args) {
+        Animal a = new Animal();
+        System.out.println(a.name);
+        Animal b = new Animal("charles");
+        System.out.println(b.name);
+      }
+    }
+  - first line in a constructor must be super() or this().  If super() not provided remember that the compiler auto generates it for us.  Cannot have both super() and this() in the same constructor.
+  - warning: make sure you don't have all constructors calling this() otherwise you will have an infinite loop b/c this() calls the other constructor.
