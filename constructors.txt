@@ -56,6 +56,7 @@ RULES OF CONSTRUCTORS
       }
       Animal() {
         this(makeRandomName()); // this() always means calling another constructor in the class
+        // code above is actually like calling new Animal('myName') and therefore setting 'myName' to this.name
       }
       static String makeRandomName() {
         int x = (int) (Math.random() * 2);
@@ -64,9 +65,9 @@ RULES OF CONSTRUCTORS
       }
       public static void main(String [] args) {
         Animal a = new Animal();
-        System.out.println(a.name);
+        System.out.println(a.name); // either bill or mario b/c random
         Animal b = new Animal("charles");
-        System.out.println(b.name);
+        System.out.println(b.name); // charles
       }
     }
   - first line in a constructor must be super() or this().  If super() not provided remember that the compiler auto generates it for us.  Cannot have both super() and this() in the same constructor.

@@ -107,3 +107,22 @@ HEAP AND REFERENCE VARIABLES:
 POLYMORPHISM
   - use generic reference variable types to refer to specific object types
     Animal myDog = new Dog();
+
+  - polymorphism is only for instance methods not for instance variables: example:
+    class Mammal {
+      String name = "furry ";
+      String makeNoise() { return "generic noise "}
+    }
+    class Zebra extends Mammal {
+      String name = "stripes ";
+      String makeNoise() { return "bray "}
+    }
+    class Zookeeper {
+      public static void main(String[] args) {
+        new Zookeeper().go();
+      }
+      void go() {
+        Mammal m = new Zebra(); // polymorphism here takes all methods from Zebra and all variables from Mammal (its type)
+        System.out.println(m.name + m.makeNoise()); // furry bray
+      }
+    }
