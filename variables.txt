@@ -6,3 +6,10 @@ local variable (variable inside a method)
   - is on the stack but not the heap, (unless it is inside an object, b/c then it is a reference variable and objects are always on the heap)
 
 
+BOOLEANS:
+  - Booleans cannot be assigned a 0 or 1 (like in c++)
+  - Also can't use numbers where booleans are required
+    int x = 1;
+    if (x) { }  // this will throw compiler error
+
+

@@ -5,3 +5,12 @@ long: 64
 float: 32
 double: 64
 
+
+numbers can have underscores to make reading simpler (as long as they aren't at the beginning or end)
+  int x = 1_000_000; // one million -> same as 1000000
+
+for doubles/floats can't use _ directly next to the decimal point
+
+
+if want to assign double to a float (see bit chart above) you must put an F at the end to tell the compiler you are ok with the loss of possible data precision
+float f = 12.21232F;

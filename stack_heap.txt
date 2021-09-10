@@ -1,0 +1,10 @@
+
+
+HEAP
+  - things that live in memory
+  - instance variables and objects live on the heap
+
+STACK
+  - called methods and their parameter variables are placed on the stack to be executed
+  - local variables live on the stack
+  - main() is placed on the stack
