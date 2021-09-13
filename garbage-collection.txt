@@ -1,0 +1,18 @@
+
+
+- java has auto garbage collection
+- cleans up objects in memory and usually runs when it senses the server is almost out of memory
+- it does this when an object is no longer accessible by a thread
+- java starts thread to run code
+
+- ways to explicitly mark object ready to be garbage collected
+  - set it to null
+  - decouple reference variable from an object by setting the reference variable to refer to another object
+    StringBuffer s1 = new StringBuffer("hello");
+    StringBuffer s2 = new StringBuffer("hi");
+    s1 = s2; // StringBuffer("hello") is now eligible for garbage collection b/c s1 now points to StringBuffer("hi") and StringBuffer("hello") points to nothing
+  - variables inside a method: once the method has run/returned, all those variables can be garbage collected (unless the method returns an object that had references to variables inside the method)
+  - System.gc() // manually invoking garbage collection, but should never do this
+
+
+

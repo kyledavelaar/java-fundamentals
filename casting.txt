@@ -18,3 +18,12 @@ UPCASTING
 class Dog extends Animal implements Pet {
   // a dog here does not have to implement all the pet methods if that is already done in the Animal class
 }
+
+
+Implicit Casting
+  int a = 100;
+  long b = a;  // b/c an int takes less space it will always fit into a long so this works with no problem
+
+Explicit Casting
+  float a = 100.009f;
+  int b = (int)a;  // must be explicitly cast b/c could lose some precision in the conversion since an int has less byte space than a float
