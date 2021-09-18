@@ -1,0 +1,28 @@
+
+
+- strings are immutable so need to assign them to a variable if change them
+  String x = "abc";
+  x.concat("fyz");
+  System.out.println(x); // "abc"
+  x = x.concat("yyy"); // a new string object is used and then immediately discarded (see warning below about creating a lot of objects in memory)
+  System.out.println(x); // "abcyyy"
+
+- However references to strings are mutable
+  String s1 = "abc";
+  String s2 = s1;
+  s1 += "def";
+  // s1 is "abcdef"
+  // s2 is "abc"
+
+- To avoid 'a new string object is used and then immediately discarded' as shown above, use StringBuilder instead when doing lots of string manipulations to save memory.  Notice that string builder objects are not immutable like strings are.
+ StringBuilder s = new StringBuilder("abc");
+ s.concat("zzz").toUpperCase();
+ System.out.println(s); // "ABCZZZ"
+
+
+- Warning Below: mutating Strings will create new objects in memory on every mutation
+  String s = "a";
+  for (int i = 0; i < 1000; i++) {
+    s = " " + i;
+  }
+  // this code will create 1000 string objects in memory, if use StringBuilder instead it will create only one object

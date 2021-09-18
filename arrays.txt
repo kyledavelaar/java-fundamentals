@@ -1,21 +1,76 @@
 
-Arrays:
+ARRAYS:
   - all same type
   - can't include size of array in declaration
-    - when you instantiate an array then the space allocation is made
+    int[5] myArray // bad, won't compile
+  - when you instantiate an array then the space allocation is made
 
   int[] myArray;
+  int myArray []; // legal but not preferred
 
   multi-dimensional:
     String[] [] managerName;  (2 dimensional)
     String[] [] [] occupantName; (3 dimensional)
 
+  - most common way of instantiating an array
+    int[] myArray;
+    myArray new int[5]; // since nothing added, gives default int values of 0
+    int[] myArray = new int[5] // or can do this in one line
+    int[] myBadArr = new int[] // won't compile Bad! must always be given a size
+    int[][] twoDi = new twoDi[5][] // in multi-dimensional arrays only need size of outermost array
+    int[] myArray = {1,2,4,5} // can do this too if know the values you want in your array at the time of instantiation
 
-java.util.*
+  - Just in Time Compilation (Anonymous Arrays)
+    int[] testScores;
+    testScores = new int[] {1,2,3}; // don't even have to assign it to something if don't want to
 
-HashMap
+    - why use this?
+      - as an argument to a method that takes an array as a parameter
+
+    - Don't specify a size
+      new Object[3] { null, new Object(), new Object() } // won't compile!
+
+  - an array can't be reassigned to another array declaration if they are not the same type (for primitives)
+    int[] arr1;
+    char[] arr2;
+    arr1 = arr2; // BAD, won't compile
+
+    - but for reference variables it just has to be an instanceof
+    - multi-dimensional arrays can't be reassigned to single arrays and vice versa
+
+--------------------------------------------------------------------
+- Usually don't use Arrays that much b/c they are limited in what they can do. They are fast but don't have as many useful methods as these 3 more commonly used objects that are based on arrays
+  java.util.*
+
+  HashMap
+  ArrayList
+  TreeSet
+
+--------------------------------------------------------------------
 
 ArrayList
 
-TreeSet
+  List<String> c = new ArrayList<String>();
+  c.add("first");
+  c.add("second");
+  c.indexOf("first"); ...etc.
+
+  - don't have to set size
+  - can change size at any time
+  - have a lot of nice methods
+  - technically can only hold objects but still can add primitives.  Behind the scenes autoboxing happens which converts primitives into objects
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

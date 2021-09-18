@@ -1,0 +1,47 @@
+
+
+- when assigning a value to a primitive size matters, long can't fit in int for example.
+- when comparing objects objectA == objectB looks at their references.  If they have the same reference it will be true
+  Button a = new Button('a');
+  Button b = new Button('b');
+  Button c = a;
+  if (a == c) {
+    // this will be true
+  }
+
+- postfix: value only incremented after used in expression
+  int count = 0;
+  System.out.println("count is " + count++) // will log "count is 0"
+  System.out.println("now count is " + count); // will log "now count is 1"
+
+- prefix does it in one line
+  int count = 0;
+  System.out.println("count is " + ++count) // will log "count is 1"
+
+- and be careful multiple expressions can be on the same line
+  int x = 2;
+  int y = 3;
+  if ((y == x++) || (x < y++)) { // two expressions here
+    //  first expression is false
+    // second expression is true b/c now x is 3 and y is 4
+  }
+
+- remember final variables cannot be changed so any ++ or -- will cause a compiler error
+- Non-short circuit operators (&& || are short circuit b/c they stop operation after they find one that matches. i.e. if first one in || is true code doesn't evaluate the second or)
+  - however these two do: & |
+    int z = 5;
+    if (++z > 5 || ++z > 6) {
+      z++;
+      // z is now 7 (not 8 b/c second operation ++z > 6 was not run)
+    }
+
+  - but...
+    int z = 5;
+    if (++z > 5 | ++z > 6) {
+      z++;
+      // z is now 8
+    }
+
+- Exclusive OR (^)
+  - only one of the expressions can be true (not both!)
+

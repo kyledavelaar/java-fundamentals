@@ -77,6 +77,7 @@ ENCAPSULATION
   - keep instance variables private; don't allow myInstantiatedClass.cash = 10;
   - make public accessor methods and force calling those methods to get access to the instance variables getters/setters
   - getters/setters allow you to create an API that can change its internals later without breaking all the other code that is using your API.  For example initially you could just return the value with a getter but in the future you could also add restrictions on how many times you can get it for example.
+  - beware of returning objects from getter methods.  objects returned should always be copies and not the actual object encapsulated in the class. if return the actual object, another class can change its properties
 
 HEAP AND REFERENCE VARIABLES:
   - For a single class there may be multiple reference variables on the heap, for example
