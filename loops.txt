@@ -1,0 +1,34 @@
+do {
+  // guaranteed to execute at least once
+} while(x > 0);
+
+
+
+FOR EACH LOOP
+  int [] a = {1,2,3,4,5};
+  for (int myNum : a) {
+    System.out.println(myNum) // 1,2,3 etc.
+    // can break/return to stop loop, can also use continue
+  }
+
+
+LABELLED BREAKS/CONTINUES
+  - add a label so can break out of outmost loop on nested loops
+
+  outer:
+    for (int n : a) {
+      while (true) {
+        System.out.println("inner"); // only prints once
+        break outer;
+      }
+        System.out.println("outer"); // won't print
+    }
+
+  outer:
+    for(int i = 0; i < 5; i++){
+      for(int j = 0; j < 5; j++) {
+        System.out.println("inner"); // prints inner 5 times
+        continue outer;
+      }
+      System.out.println("outer") // never prints
+    }
