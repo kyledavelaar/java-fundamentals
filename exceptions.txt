@@ -1,0 +1,44 @@
+Big Rule in Java:
+ - Each method must either handle all unchecked exceptions by supplying a try/catch
+  OR
+  - list each unhandled checked exception as a thrown exception
+
+can put multiple exceptions but must place them in order of most specific to least (child/parent classes)
+
+exceptions inherit from other exceptions
+
+try {
+  // open a file
+} catch (FileNotFoundException e) {
+  // this exception is a sub class of the next exception
+} catch (IOException ex) {
+  // this is the super class of FileNotFoundException
+  // if this exception put first, then the code will not compile.
+  // if FileNotFoundException not the issue and IOException not the issue, then the error will propagate to all the sub classes of IOException until it is caught.
+}
+
+- if exceptions are siblings you can put them in any order
+
+
+methods must declare exceptions that they can throw. Otherwise those exceptions will not be thrown
+
+void myFunction() throws MyException1, MyException2 {
+  // doesn't mean it will throw, but if it needs to it can only throw these two exceptions
+}
+
+This code won't compile b/c it is not declaring "throws IOException" in doStuff or doMore nor does either have a try/catch
+  void doStuff() {
+    doMore();
+  }
+
+  void doMore() {
+    throw new IOException();
+  }
+
+Runtime exceptions are referred to unchecked exceptions and don't need to be declared
+  public void myMethod() {
+    // throws NullPointerException
+    // b/c NullPointerException is a subclass of RuntimeException you don't need to declare an exception for this method
+  }
+
+Error is not a subtype of Exception so don't need to declare a throw for a new Error

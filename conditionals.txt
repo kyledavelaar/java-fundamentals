@@ -1,0 +1,15 @@
+switch statements can only accept
+  - byte
+  - short
+  - int
+  - char
+  - string
+
+  For example this will fail
+
+  long s = 30;
+  switch (s) {
+
+  }
+
+
