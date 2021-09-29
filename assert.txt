@@ -1,0 +1,20 @@
+
+Enable assertions
+  java -ea com.myStuff.TestClass
+
+
+Asserts can be use on private methods
+
+Public Methods
+  - They should not be used on public methods b/c they are open the outside world and assertions are not usually turned on in production envs.  Instead if you want to guarantee an argument to a method is appropriate for the method, throw an IllegalArgumentException
+  - The only exception is for values that you know the public method should never ever be able to have
+
+
+private void doStuff(int x) {
+  assert (x > 0);
+  assert (x < 1000): "x is " + x; // can add debugging text after the assertion
+  // use x
+}
+
+Assertions should never modify state (cause side effects) but leave class same way it was before
+
