@@ -1,0 +1,45 @@
+Regex:
+  - once found in expression it can't be used again
+
+Greedy
+  - looks at entire string and then evaluates from backward from right to left
+
+  .*aa
+  "bbaaabaa"
+  Result:
+    - bbaaabaa
+
+
+
+Reluctant
+  - moves from left to right each character at a time
+
+  .*?aa
+  "bbaaabaa"
+  Result:
+    - bbaa
+    - abaa
+
+
+Must double escape patterns otherwise compiler will think they are normal escapes like \n
+  String pattern = "\\d";
+
+
+import java.util.regex.*;
+
+public class Regex {
+  public static void main(String[] args) {
+    Pattern p = Pattern.compile(args[0]);
+    Matcher m = p.matcher(args[1]);
+    while(m.find()) {
+      System.out.println(m.start() + " " + m.group());
+    }
+  }
+}
+
+java Regex "\d\w" "ab4 56_7ab"
+// 4 56 -> starting index where found and match
+// 7 7a
+
+
+

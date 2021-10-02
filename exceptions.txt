@@ -41,4 +41,32 @@ Runtime exceptions are referred to unchecked exceptions and don't need to be dec
     // b/c NullPointerException is a subclass of RuntimeException you don't need to declare an exception for this method
   }
 
-Error is not a subtype of Exception so don't need to declare a throw for a new Error
+- Error is not a subtype of Exception so don't need to declare a throw for a new Error
+
+
+- Catch Multiple Exceptions at once.  But can't put any exceptions together.  They must be of different types (subclasses)
+
+  try {
+    // code
+  } catch (SQLException | IOException e) {
+    handleIt(e);
+  }
+
+- Parenthesis after try
+
+  try (Reader reader = new BufferedReader(new FileReader(file))) {
+    // do something with the file contents
+    // with these readers we don't need to close files b/c it is all handled for u
+  }
+
+  what happens in () must implement the AutoClosable.close() method
+
+
+
+
+
+
+
+
+
+

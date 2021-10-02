@@ -1,0 +1,41 @@
+
+
+GOALS
+  - loose coupling
+  - high cohesion
+  - ease of creation
+  - ease of maintenance
+  - each of enhancement
+
+COUPLING
+  - degree to which one class knows about another class
+  - class A should only know what class B has exposed through its interface
+  - usually achieved through encapsulation
+
+COHESION
+  - how a single class is designed
+  - classes should have a well focused purpose
+  - focused classes make them reusable
+
+OBJECT COMPOSITION
+  - ClassA that HAS-a ClassB and IS-a ClassB
+
+    public ClassA implements ClassB {
+      private ClassB classB; // can now delegate to classB all of classB's logic
+
+      classB.doStuff(); // and don't need to re-write doStuff() in ClassA as well
+    }
+
+  - This allows us code reuse
+  - This allows us to have one subClass per functionality instead of having a class for every combination of functionalities, Mp3Video, MovVideo, etc.
+
+SINGLETON
+  -
+
+
+
+
+
+
+
+
