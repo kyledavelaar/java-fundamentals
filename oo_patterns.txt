@@ -31,8 +31,27 @@ OBJECT COMPOSITION
 
 SINGLETON
   - only one instance of a class
-  -
 
+DATA ACCESS OBJECT (DAO)
+  - only responsible for storing data
+  - 'single responsibility' is the principal being applied, it literally only stores data.  Think about a bookstore.  The DAO does not keep track of what a book is vs what a CD is.  It just stores those details, gets, deletes, updates, them.
+  - also if we need to, we can swap out database implementations easily and not affect the core objects like Book and CD
+
+FACTORY
+  - factory pattern creates new objects
+  - like the singleton but not limited to creating only 1 object
+  - 3 types of factories
+    - Factory Method
+      - shown in Factory.java class
+      - creates classes that can be used in other classes
+    - Abstract Factory
+      - creates families of related classes
+    - Factory
+      - public Foo createFoo() { return new Foo(); }
+  - Benefits of the factory pattern:
+    - caller doesn't change when the factory returns different subclasses.  this means your core logic doesn't have to change when you are in testing environments or when in sql or nosql or whatever
+    - centralizes creation logic outside of calling class.  prevents duplication, separation of concerns
+    -
 
 
 
