@@ -30,6 +30,7 @@ OBJECT COMPOSITION
   - This allows us to have one subClass per functionality instead of having a class for every combination of functionalities, Mp3Video, MovVideo, etc.
 
 SINGLETON
+  - only one instance of a class
   -
 
 
