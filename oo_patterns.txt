@@ -17,6 +17,9 @@ COHESION
   - classes should have a well focused purpose
   - focused classes make them reusable
 
+ENCAPSULATION
+  - public variables used in other classes are a sign of poor encapsulation
+
 OBJECT COMPOSITION
   - ClassA that HAS-a ClassB and IS-a ClassB
 
@@ -31,6 +34,7 @@ OBJECT COMPOSITION
 
 SINGLETON
   - only one instance of a class
+  - creational design pattern
 
 DATA ACCESS OBJECT (DAO)
   - only responsible for storing data
@@ -40,6 +44,8 @@ DATA ACCESS OBJECT (DAO)
 FACTORY
   - factory pattern creates new objects
   - like the singleton but not limited to creating only 1 object
+  - creational design pattern
+  - decouples the caller from the implementation class name
   - 3 types of factories
     - Factory Method
       - shown in Factory.java class
