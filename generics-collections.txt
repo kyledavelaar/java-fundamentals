@@ -1,0 +1,23 @@
+
+
+toString()
+  - can be overridden in a class to add more info to what is outputted in System.out.println(myClass)
+
+
+equals()
+  - two objects are considered equal only if the two references refer to the same object
+  - but what happens if want to use a class instance as a key in a hashMap?  the default equals would require you to know the object reference id, which we usually wouldn't have.  so we would need to override equals to use a variable inside the class like a uuid or vin number for a car, etc.  Or you can just use a string as the key and make that string the uuid or vin.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
