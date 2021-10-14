@@ -7,11 +7,79 @@ toString()
 equals()
   - two objects are considered equal only if the two references refer to the same object
   - but what happens if want to use a class instance as a key in a hashMap?  the default equals would require you to know the object reference id, which we usually wouldn't have.  so we would need to override equals to use a variable inside the class like a uuid or vin number for a car, etc.  Or you can just use a string as the key and make that string the uuid or vin.
+  - if override equals must also always override hashCode b/c two objects cannot be equal unless their hashCodes are also equal.
 
 
+hashCode()
+  - hashcodes are used to increase the performance of large collections of data
+  - all collections that have hash in the name use hashcodes as keys, hashMap, hashSet, etc.
+  - example:
+    - think of hashes like buckets that can hold papers with names written on them.  To know which bucket to put the name in, you add the letters together A=1, B=2, etc.
+    - but two different names could have same sum value Amy/May.  So they go into the same bucket.  That is fine.  We do not need UUIDs here.  As a result there are two steps for locating an object based on its hash
+      1. use hashCode() to find the right bucket (in our example: add the letters together)
+      2. use equals() to search the bucket for the right object
+    - this is why two objects cannot be equal if only equals() is true.  hashCode() must also be true otherwise they might have the same 'value' but be in entirely different buckets, which means they are not really equal
+
+Careful:
+  - Collections (with s) is a class with static utility methods
+  - Collection (no s) is an interface with declarations of the common methods like add, remove, contains
+  - collection (lower case c) represents any data structure in which objects are stored and iterated over
 
 
+Collection Interfaces
+  - Collection
+  - List
+  - Queue
+  - Set
+  - Map
+  - NavigableSet
+  - SortedSet
+  - SortedMap
+  - NavigableMap
 
+Collection Classes
+  - Maps (things with a unique ID)
+    - HashMap
+      - unsorted/unordered map
+    - Hashtable
+      - deprecated version of HashMap (don't use it)
+    - TreeMap
+      - sorted Map by natural order of the elements
+      - can use Comparator to define custom sort order
+    - LinkedHashMap
+      - maintains insertion order
+      - faster iteration than HashMap
+      - slower for adding/removing elements than HashMap
+  - Sets (unique things, no duplicates allowed)
+    - HashSet
+      - unsorted, unordered set
+      - uses the hashcode of the object being inserted as the key
+      - objects added must override hashCode() otherwise the default hashCode will allow objects you might consider 'meaningfully equal' to be added to your no duplicates allowed set
+    - LinkedHashSet
+      - ordered version of HashSet, ordered by the order in which they were inserted
+      - maintains a doubly linked list between all elements
+      - objects added must override hashCode() otherwise the default hashCode will allow objects you might consider 'meaningfully equal' to be added to your no duplicates allowed set
+    - TreeSet
+      - a sorted collection in ascending order
+      - can use Comparator to give own sorting/ordering
+  - Lists (lists of things)
+    - ArrayList
+      - fast iteration
+      - not the best choice when doing a lot of deletes and insertion, LinkedList is better for that
+    - LinkedList
+      - elements doubly linked to each other
+      - iterates more slowly than ArrayList
+      - but better for insertion/deletion, especially at end/beginning of LinkedList
+    - Vector
+      - older version of ArrayList (so generally just use ArrayList)
+      - methods are synchronized for thread safety.  can do this too with ArrayList via Collections class methods
+  - Queues (things arranged in order by which they are to be processed)
+    - PriorityQueue
+      - Instead of typical FIFO (first in first out) a priority queue allows you to specific priority on each item for when they should be removed (priority in, priority out)
+      - supports Comparator for custom ordering
+  - Utilities
+    - Collections
+    - Arrays
 
 
 

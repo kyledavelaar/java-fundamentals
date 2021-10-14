@@ -1,0 +1,19 @@
+Not Autoboxing
+  Integer i1 = new Integer(100);
+
+AutoBoxing (allowing the compiler under the hood to to do the above for us when we write this)
+  Integer i1 = 100;
+
+
+But be Careful!
+  Integer i1 = 100;
+  Integer i2 = 100;
+
+  i1 != i2  // True b/c the are not the same object
+
+  i1.equals(i2)  // true b/c their values are the same "meaningfully equivalent"
+
+  i1 == i2 // True ---> so odd!  why? When autoboxing (not creating integers through Integer i1 = new Integer(100)) two instances will be equal if they have the same primitive value.  this is done to save memory.  This is done for Boolean, Byte, Character, Short, and Integer
+
+
+
