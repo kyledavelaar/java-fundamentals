@@ -66,7 +66,33 @@ Must sort array before searching it
 
 
 
+Can convert Arrays to Lists and vice versa
+  -if change one they both change b/c hold the same reference
 
+  String[] sa = { "one", "two" };
+  List l = Arrays.asList(sa);
+  l.size(); // 2
+  l.get(1); // "two"
+  l.set(2, "three");
+  sa[0] = "zero";
+  for (String s: sa) {
+    System.out.println(s + " ");
+  }
+  for (String la: l) {
+    System.out.println(la + " "); // should print same as above loop
+  }
+
+
+Can convert Lists to Arrays
+  - two options for toArray(), either returns an object array or uses the array you send it as a destination array
+
+  List<Integer> li = new ArrayList<>();
+  for (int x = 0; x < 3; x++) {
+     li.add(x);
+  }
+  Object[] oa = li.toArray();  // create object array
+  Integer[] ia = new Integer[3];
+  ia = li.toArray(ia); // create integer array
 
 
 
