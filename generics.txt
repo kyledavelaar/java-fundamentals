@@ -77,5 +77,57 @@ What if polymorphically want to pass many subTypes into a method using generics?
   }
 
 
-WildCard Rules
+Generics WildCard Rules
+  - List<?> list = new ArrayList<Dog>(); // works fine
+  - List<Dog> list = new ArrayList<?>(); // can't use wildcards in object creation
+  - List<? extends Animal> list = new ArrayList<Dog>();  // works fine b/c Dog IS A animal
+  - List<? super Dog> list = new ArrayList<Animal>(); // works fine b/c Animal is a superClass of Dog
+  -List<? super Animal> list = new ArrayList<Dog>();  // does not work b/c Dog is not a superClass of Animal
+
+
+
+Generic Declarations
+  - T is "type", Java convention for anything that is not a collection
+  - E is "element" Java convention for anything that is a collection
+  - See Java collections API as an example:
+    - public interface List<E>
+    - E tells you that it will accept an Element of your choosing.  When we instantiate a list the E gets replaced with what type we put into it.  <Integer> for example.
+    - also the methods for List use E and will get replaced too
+    - boolean add(E e)
   -
+
+Use Generics to create classes that can take any type
+
+  import java.util.*
+  public class RentalGeneric<T> {
+    private List<T> rentalPool;
+    private int maxNum;
+
+    // constructor where T will get replaced when used with whatever type you place into it
+    public RentalGeneric(int maxNum, List<T> rentalPool) {
+      this.maxNum = maxNum;
+      this.rentalPool = rentalPool;
+    }
+
+    public T getRental() {
+      return rentalPool.get(0);
+    }
+    public void returnRental(T returnedThing) {
+      rentalPool.add(returnedThing);
+    }
+  }
+
+  class TestRental {
+    public static void main(String[] args) {
+      Car c1 = new Car();
+      Car c2 = new Car();
+      List<Car> l = new ArrayList<Car>();
+      l.add(c1);
+      l.add(c2);
+      // T gets replaced with 'Car'
+      RentalGeneric<Car> rg = new RentalGeneric<Car>(2, l);
+      Car carToRent = rg.getRental();
+      rg.returnRental(carToRent);
+      l.add(5); // fails obviously.  l only accepts Cars
+    }
+  }
