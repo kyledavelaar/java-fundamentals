@@ -1,0 +1,81 @@
+
+
+
+Types/Generics only exist during compilation stage, when code is run there are no types.  So as long as it passes the compilation stage it will run even if the types are off.  This means however that code may fail when run.
+
+This is important to know b/c Java didn't enforce type on collections in the past
+
+List myList = {"string", 20, new Object()};
+// this was perfectly legal
+
+
+But now we need to cast only one type in a List
+  List<String> myList = {"one", "two" };
+
+
+Compiler will give warnings when mixing old and new Java collections saying you might have an issue.  It doesn't know for sure if you will but it will warn you nevertheless.
+
+
+
+Casting:
+
+  // with old Java you must cast!  B/c the type is not defined in collection
+  List test = new ArrayList();
+  test.add(43);
+  int x = (Integer)test.get(0);
+
+
+  // with new Java casting is no longer necessary
+  List<Integer> test2 = new ArrayList<>();
+  test2.add(1);
+  int x = test2.get(0); // works fine
+
+
+Generics must be of same type.  Cannot be a super/sub type like what is done polymorphically with List/ArrayList
+  List<Number> i = new ArrayList<Integer>();  // does not work! even though Integer is a subclass of Number
+
+What is confusing is this does work with arrays
+  class Parent {}
+  class Child extends Parent {}
+  Parent[] arr = new Child[3];  // this does work.  but only in arrays
+
+
+What if polymorphically want to pass many subTypes into a method using generics?  How would you do this without having to use arrays?  You need to use the super class as the <Animal> instead of the subClass types <Dog>
+
+  abstract class Animal {
+    public void abstract checkup();
+  }
+  class Dog extends Animal {
+    public void checkup() {}
+  }
+  class Cat extends Animal {
+    public void checkup() {}
+  }
+  public class AnimalDoctor {
+    // can now take any subtype of Animal as long as don't add an item to the List passed in.  also 'extends' here refers to interfaces too.  just think of IS A.
+    public void checkAnimals(List<? extends Animal> animalList)){
+      for (Animal a: animalList) {
+        a.checkup();
+      }
+    }
+    // if you use 'super' you can add to the List anything that is a superSet of the class you are adding, so could add Animal here or Dog, but not Cat
+    public void addAnimals(List<? super Dog> animalList) {
+      animalList.add(new Dog());
+    }
+    // can also use <?> to have any type you want but be careful b/c while the method accepts anything the add method will only work with valid Animal objects
+    public void addAnything(List<?> anything) {
+      anything.add(3); // won't work
+    }
+    public static void main(String[] args) {
+      List<Animal> animals = new ArrayList<Animal>();
+      animals.add(new Dog());
+      animals.add(new Cat());
+      AnimalDoctor ad = new AnimalDoctor();
+      ad.checkAnimals(animals);
+
+    }
+  }
+
+
+WildCard Rules
+  -
