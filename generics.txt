@@ -131,3 +131,33 @@ Use Generics to create classes that can take any type
       l.add(5); // fails obviously.  l only accepts Cars
     }
   }
+
+// can also extend with T instead of use ?
+
+  public class AnimalHolder<T extends Animal> {
+    T animal;
+    public static void main(String[] args) {
+      AnimalHolder<Dog> d = new AnimalHolder<Dog>(); // this works
+      AnimalHolder<Integer> i = new AnimalHolder<Integer>() // error! won't work
+    }
+  }
+
+// can also use T just on methods
+
+  public class CreateAnArrayList {
+    // <T> here is not the return type!  it is void so it returns nothing.  You need <T> here to be able to use T as an argument type
+    public <T> void makeArrayList(T t) {
+      List<T> list = new ArrayList<T>():
+      list.add(t);
+    }
+  }
+
+  // when you invoke makeArrayList and pass it a Dog() now, it will make a list of Dogs.  T gets replaced under the hood with Dog.
+
+  // could also put boundary on T
+    public <T extends Number> void makeArrayList(T t) {}
+
+
+- You can use more than one parameterized type
+  public class Two(T, X) {}
+
