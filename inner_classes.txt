@@ -1,0 +1,24 @@
+
+Regular Inner Classes:
+  - has access to all members (variables/methods) in outer class, even those marked private
+  - They are not:
+    - static
+    - method-local
+    - anonymous
+  - Inner classes cannot have static declarations of any kind
+  - Only way can access inner class is through a live instance of the outer class
+
+
+Method Local Inner Classes
+
+
+Anonymous Inner Classes
+
+
+Static Nested Classes
+
+
+
+
+
+
