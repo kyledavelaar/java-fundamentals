@@ -8,8 +8,51 @@ Regular Inner Classes:
   - Inner classes cannot have static declarations of any kind
   - Only way can access inner class is through a live instance of the outer class
 
+    class MyOuter {
+      private int x = 7;
+      public void makeInner() {
+        MyInner inner = new MyInner();
+        inner.log();
+      }
+      class MyInner {
+        public void log() {
+          System.out.println("inner classes can access all private stuff" + x);
+          // can get 'this' for outer class by -> MyOuter.this
+        }
+      }
+    }
+
+  - Can create inner class from outside the outer class like this (must have an outer class instance!)
+
+    public static void main(String[] args) {
+      MyOuter mo = new MyOuter();
+      MyOuter.MyInner inner = mo.new MyInner();
+      inner.log();
+    }
+
+    or same thing but in one line
+
+    public static void main(String[] args) {
+      MyOuter.MyInner inner = new MyOuter().new MyInner();
+      inner.log();
+    }
 
 Method Local Inner Classes
+
+  class MyOuter {
+    private String x = "hi";
+
+    void doStuff() {
+      String z = "method variable"; // cannot use this in the inner class b/c method variables are cleared from the heap once the method is completed.  If want to use a method variable you must mark it as 'final'
+      class MyInner {
+        public void seeOuter() {
+          System.out.println("has access to outer private " + x);
+        }
+      }
+      MyInner mi = new MyInner();
+      mi.seeOuter();
+    }
+  }
 
 
 Anonymous Inner Classes

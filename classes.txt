@@ -49,6 +49,8 @@ NON-ACCESS MODIFIERS
     - method implemented in other code/language, like C.  And cannot be changed.
   - static:
     - belongs to a type, not an instance.  class static methods don't need the class to be instantiated to be used.  And when you instantiate the class, you are not creating a new method each time.  Since it is static it is only created once for all instantiations of the class.
+    - has no access to 'this' since it isn't an instance
+    - static methods can only access static members(variables)
 
 
 INTERFACE
