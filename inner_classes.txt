@@ -1,5 +1,7 @@
-
+//////////////////////////////////////////////////////////////////////
 Regular Inner Classes:
+//////////////////////////////////////////////////////////////////////
+
   - has access to all members (variables/methods) in outer class, even those marked private
   - They are not:
     - static
@@ -37,7 +39,9 @@ Regular Inner Classes:
       inner.log();
     }
 
+//////////////////////////////////////////////////////////////////////
 Method Local Inner Classes
+//////////////////////////////////////////////////////////////////////
 
   class MyOuter {
     private String x = "hi";
@@ -54,11 +58,68 @@ Method Local Inner Classes
     }
   }
 
-
+//////////////////////////////////////////////////////////////////////
 Anonymous Inner Classes
+//////////////////////////////////////////////////////////////////////
+
+  class Popcorn {
+    public void pop() {
+      System.out.println("in Outer");
+    }
+  }
+
+  // p here is not an instance of Popcorn but is an instance of a just-in-time anonymous unnamed subclass of Popcorn b/c it has {} after new PopCorn() instead of ;
+  class Food {
+    Popcorn p = new Popcorn() {
+      // overrides pop in outer Popcorn class
+      public void pop() {
+        System.out.println("in inner");
+      }
+      public void sizzle() {} // this method will blow up when called b/c not in base class (think polymorphism)s
+    }; // note the semi-colon here!  odd but necessary!
+  }
+
+  - the whole point of anonymous inner classes is to override one or more methods of the superclass or to implement methods of an interface
+  - can only add methods that are in the outer class
+
+  - can also use an interface
+
+  interface Cookable {
+    public void cook() {}
+  }
+
+  class Food {
+    // typically can't instantiate an interface, you have to implement it in some other class and then instantiate that class, but this is like doing two things at once
+    Cookable c = new Cookable() {
+      public void cook() {
+        // implementing the cook method
+      }
+    };
+  }
 
 
+  Lastly can add them as arguments to functions.  This is a quick way to not have to implement an interface and then also instantiate that implementor class.
+
+    class MyClass {
+      void go() {
+        Bar b = new Bar();
+        b.doStuff(new Foo() {
+          public void makeFoo() {}
+        });  // note the semi-colon goes outside the ) when used as a method arg
+      }
+    }
+
+    interface Foo {
+      void makeFoo();
+    }
+    class Bar {
+      void doStuff(Foo f) {}
+    }
+
+
+//////////////////////////////////////////////////////////////////////
 Static Nested Classes
+//////////////////////////////////////////////////////////////////////
 
 
 
