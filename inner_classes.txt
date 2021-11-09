@@ -120,7 +120,32 @@ Anonymous Inner Classes
 //////////////////////////////////////////////////////////////////////
 Static Nested Classes
 //////////////////////////////////////////////////////////////////////
+  - a class that's a static member of the enclosing class
+  - just like any other static property:
+    - inner class can be accessed without an instance of the outer class
+    - static classes cannot access anything non-static
 
+  class BigOuter {
+    static class Nested {
+      void go() {
+        System.out.println("go");
+      }
+    }
+  }
+
+  class Broom {
+    static class B2 {
+      void goB2() {
+        System.out.println("go2");
+      }
+      public static void main(String[] args) {
+        BigOuter.Nest n = new BigOuter.Nest();
+        n.go();  // "go"
+        B2 b2 = new B2();
+        b2.goB2(); // "go2"
+      }
+    }
+  }
 
 
 
