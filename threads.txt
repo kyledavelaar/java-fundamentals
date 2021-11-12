@@ -1,0 +1,67 @@
+
+One call stack per thread
+  - main() method starts one thread
+  - any other threads you start work concurrently with that main thread
+
+JVMs and Threads
+  - different JVMs can run threads in different ways so don't write code that only caters to one JVM.  Write thread safe code that will work in any JVM
+  - for example some JVMs round robin nicely, others allow one thread to hog all the resources
+
+daemon threads versus user threads
+  - user threads are the main types of threads you will be writing
+  - JVM will shut down once all user threads are done
+
+
+java.lang.Thread
+
+start()
+yield()
+sleep()
+run()
+
+
+Instantiate a thread in one of two ways:
+  - Extend the java.lang.Thread class
+    - won't typically do this b/c would only want to extend if want to create a subclass of behavior that builds upon the existing thread class
+  - Implement the Runnable interface
+    - will typically use this b/c just want to use thread behavior in your job
+    - this also leaves your class able to extend another class
+
+
+  class MyClass extends Thread {
+    public void run() {
+      // Thread class expects no arguments passed into run
+      // all code inside this method will be run in a new thread
+      // also this method will be called for you
+    }
+
+    public void run(String s) {
+      // overloaded method but warning!  Threads will only be used in run methods that have no arguments passed to them...so overloading here doesn't help you out much. All code here will be run on the main call stack. not a new call stack
+      // you must call the overloaded method yourself
+    }
+  }
+
+
+  class MyRunnable implements Runnable {
+    public void run() {
+      // put job logic here that want run on a separate thread
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
