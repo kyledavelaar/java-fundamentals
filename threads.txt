@@ -92,8 +92,51 @@ Instantiate a thread in one of two ways:
 
   Thread states:
     - new
-    - runnable (when run() method is being done)
+      - thread instance has been created but start() method not called yet
+      - a live thread object but not a 'thread of execution'
+      - thread considered 'not alive' yet
+    - runnable
+      - eligible to be run but scheduler has not picked it up yet
+      - moves into runnable state when start() method invoked
+      - can also move back into runnable state from a blocked, waiting, or sleeping state
+    - running
+      - scheduler chooses this thread and says, okay run now
+      - run() method called and actively working on the job logic
+    - waiting/blocked/sleeping
+      - not eligible to run, it is alive just not runnable
+      - why put in this state?  it could be waiting for resources to come available, or an object might have a lock on it
+      - may be sleeping b/c the code tells the thread to sleep for a period of time
+      - you can't tell another thread to sleep or wait or block it in any way
     - dead
+      - run method completes
+      - can never be brought back to life and executed again
+
+  Sleep()
+    - call in run() method to stop job from running for >= a set time
+    - static method on the Thread class
+    - Thread.sleep(5000);  // 5 seconds
+
+  Priorities
+    - can give a thread a priority from 1 to 10 and it will usually be granted but not always
+    - default priority is 5
+      Thread t = new Thread();
+      t.setPriority(8);
+      t.start();
+
+  Yield()
+    - call in run() method to stop job from running and give other jobs with higher priority a chance to run (no guarantee this will happen)
+
+  Join()
+    - lets one thread join onto the end of another thread
+    - Thread B for example can't finish its work until Thread A is done so you would join B to A.  B will then run sometime after A's completion.
+    - join() can cause the current thread to stop executing until the thread it joins with completes
+      Thread a = new Thread(runnableJobA);
+      a.start();
+      Thread b = new Thread(runnableJobB);
+      b.start();
+      // now both thread running simultaneously if multi-core
+      b.join(); // A joins to the end of B
+      // B will be the only job running now...when it completes A will again resume
 
 
   Scheduler:
