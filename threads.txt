@@ -28,11 +28,14 @@ Instantiate a thread in one of two ways:
     - this also leaves your class able to extend another class
 
 
-  class MyClass extends Thread {
+  class MyThreadClass extends Thread {
     public void run() {
+      // put job logic here that you want run on a separate thread
       // Thread class expects no arguments passed into run
       // all code inside this method will be run in a new thread
-      // also this method will be called for you
+      // also this method will be called for you when you instantiate MyThreadClass
+      // there is no need to call myThreadClass.run();
+      // here we are combining the job and the thread it is running on into one class
     }
 
     public void run(String s) {
@@ -45,8 +48,58 @@ Instantiate a thread in one of two ways:
   class MyRunnable implements Runnable {
     public void run() {
       // put job logic here that want run on a separate thread
+      // notice now the job logic is separated from the thread that will actually be used to run this job (much better)
+
+      System.out.println("Job being run on thread " + Thread.currentThread().getName());
+
+      for (int x = 0; int < 6; int++) {
+        System.out.println("job running");
+      }
+
+      // when target run method of the thread completes, the thread is considered to be "done" and the stack for that thread dissolves
     }
   }
+
+  public class TestThreads {
+    public static void main(String[] args) {
+      MyRunnable mr = new MyRunnable();
+      // think of the thread as the "worker"
+      // here we have one job being run by many workers
+      Thread t1 = new Thread(mr);
+      Thread t2 = new Thread(mr);
+      Thread t3 = new Thread(mr);
+      t1.setName("First Thread");
+
+      // threads are not run in order so t2 could very easily finish or even start before t1, it is all up to the scheduler
+
+      t1.start();  // can only call start on a Thread instance, NOT a Runnable!
+      t2.start();
+      t3.start();
+
+      t1.isAlive() // logs if thread is still running
+      t2.getState() // very useful for debugging
+
+      t1.start() // NO CAN'T DO THIS -> once a thread is started, it can never be started again, even if the first run has completed
+    }
+  }
+
+  Types of Thread() constructors are:
+    - Thread() // used when extending Thread class
+    - Thread(Runnable r) // used above when have separate runnable and thread class
+    - Thread(Runnable r, String name)
+    - Thread(String name)
+
+
+  Thread states:
+    - new
+    - runnable (when run() method is being done)
+    - dead
+
+
+  Scheduler:
+    - In single Processor machines only one thread can run at once.  The scheduler determines which thread will run at any one time.
+
+
 
 
 
