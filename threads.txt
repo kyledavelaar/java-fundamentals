@@ -143,10 +143,82 @@ Instantiate a thread in one of two ways:
     - In single Processor machines only one thread can run at once.  The scheduler determines which thread will run at any one time.
 
 
+  How avoid Race Conditions of two threads both accessing same Object?
+    - use synchronized access control modifier on any method that needs to fully complete before it can be run by another thread.  (i.e. method can never run simultaneously on two threads)
+      private synchronized void makeWithdrawal(int amount) {
+        // only one thread can access this method at a time
+      }
+    - Think of checking account and married couple.  They both have access and try to withdrawal money at the same time.  If both are on a separate thread without a synchronized modifier on the withdrawal() method they could both withdrawal even if not enough money is in the account for both of them.
+    - Every Java object has a built in lock that only comes into play when there is a synchronized method
+    - if a thread goes to sleep it holds onto the locks it has, it doesn't release them
+    - a thread can acquire more than one lock.  i.e. it can call a synchronized method on one object and then a synchronized method on a different object.
+    - one thread can call multiple synchronized methods on the same object. JVM knows that this thread already has a lock on this object.
+    - synchronization does hurt concurrency so synchronize as little as possible
+
+  - You can synchronize a block of code rather than a method.
+    class SyncTest {
+      public void doStuff() {
+        System.out.println("not synchronized");
+        // you can synchronize with a lock on any object in a synchronized block
+        // in this case we used "this" to say the current object is where we want the lock placed.  But we could use an outside object as well and we'd do that by replacing "this" with the instance of that object.
+        synchronized(this) {
+          System.out.println("synchronized");
+        }
+      }
+    }
 
 
 
 
+
+Synchronizing static methods:
+  - in static methods there can only ever be one copy of the data so there will only be one lock (for the entire class)
+    public static synchronized int getCount() {
+      return count; // same as non static methods
+    }
+
+  // or can use synchronized block (but syntax is a little different for static)
+    public static int getCount() {
+      synchronized(MyClass.class) {
+        return count;
+      }
+    }
+
+  - MyClass.class is a class literal and tells the JVM that MyClass is the one we are putting the lock on
+
+
+
+Be careful with non-static methods that change static variables and vice versa
+  - why? b/c a single lock can only be for the static or non-static variables (not both)
+  - so if you synchronize a static method and then update non-static instance variables from that method, the lock is not on those instance variables and another process also updating those instance variables will be able to do so b/c they are not bound to the static lock.
+  - so always only update static from static methods and non-static from non-static methods (like below)
+
+  public class Thing {
+    private static int staticField;
+    private int nonStaticField;
+    public static synchronized int getStaticField() {
+      return staticField;
+    }
+    public static synchronized void setStaticField(int staticField) {
+      Thing.staticField = staticField;
+    }
+    public static synchronized int getNonStaticField() {
+      return nonStaticField;
+    }
+    public synchronized void setNonStaticField(int nonStaticField) {
+      this.nonStaticField = nonStaticField;
+    }
+  }
+
+
+Thread Safe Classes
+  - When we follow the rules above we can say a class is thread-safe
+  - Some built in java classes are already thread safe.  StringBuffer has synchronized methods to make it thread safe while StringBuilder has all the same methods but they are no synchronized so it is not thread safe.  However it is faster b/c it is not synchronized.
+  - Be careful with so called 'thread safe' built in classes.  All the methods are synchronized but there is nothing stopping something else from being called in between two synchronized methods.  For example Collections.SynchronizedList(new LinkedList()) you can call add() and remove() methods but what if something else happens between add and remove that affects the list.  Then you might be trying to remove something that is no longer there.
+
+
+  Thread Deadlock:
+    -
 
 
 
