@@ -13,11 +13,18 @@ daemon threads versus user threads
 
 
 java.lang.Thread
+  - start()
+  - yield()
+  - sleep()
+  - run()
 
-start()
-yield()
-sleep()
-run()
+java.lang.Object
+  - wait()
+  - notify()
+  - notifyAll()
+
+Interface Runnable
+  - run()
 
 
 Instantiate a thread in one of two ways:
@@ -107,6 +114,8 @@ Instantiate a thread in one of two ways:
       - why put in this state?  it could be waiting for resources to come available, or an object might have a lock on it
       - may be sleeping b/c the code tells the thread to sleep for a period of time
       - you can't tell another thread to sleep or wait or block it in any way
+      - wait(), sleep(), join() all put a thread in this state
+      - could also be blocked/waiting b/c can't get a lock for a synchronized block
     - dead
       - run method completes
       - can never be brought back to life and executed again
@@ -115,9 +124,13 @@ Instantiate a thread in one of two ways:
     - call in run() method to stop job from running for >= a set time
     - static method on the Thread class
     - Thread.sleep(5000);  // 5 seconds
+    - using sleep prevents one thread from hogging the running process(think single threaded/core machine).  However yield() is more commonly used b/c it usually does the same (but it is not guaranteed)
+    - no locks are released when sleep() is used so be careful
+    - one thread can't tell another thread to sleep b/c it is a static method
 
   Priorities
     - can give a thread a priority from 1 to 10 and it will usually be granted but not always
+    - if not given a priority it will inherit the priority of the thread that created it
     - default priority is 5
       Thread t = new Thread();
       t.setPriority(8);
@@ -226,6 +239,8 @@ Thread Deadlock:
 Wait/Notify:
   - One thread calls wait() so it isn't constantly running and then waits for a notify() call from another thread to wake it up and get it running again.
   - But warning: wait() and notify() must be called from within a synchronized context.  A thread can't invoke wait() or notify() unless it owns that object's lock.
+  - notify() can't specify which thread it wants to notify, it is randomly chosen by the JVM
+  - wait(), notify(), notifyAll() must be called from within a synchronized context
 
   class c {
     public static void main(String[] args) {
