@@ -217,9 +217,99 @@ Thread Safe Classes
   - Be careful with so called 'thread safe' built in classes.  All the methods are synchronized but there is nothing stopping something else from being called in between two synchronized methods.  For example Collections.SynchronizedList(new LinkedList()) you can call add() and remove() methods but what if something else happens between add and remove that affects the list.  Then you might be trying to remove something that is no longer there.
 
 
-  Thread Deadlock:
-    -
+Thread Deadlock:
+  - 2 thread blocked b/c they are waiting for each other's lock
+  - example: thread A acquires lock 1 and then waits for lock 2 to open up, b/c lock 2 is already being used by thread D.  However thread D wants to run a task on lock 1 but it can't do it b/c A already has the lock on it.  So D will never complete meaning A will never complete.
+  - solution: try to acquire locks in a predefined order
 
+
+Wait/Notify:
+  - One thread calls wait() so it isn't constantly running and then waits for a notify() call from another thread to wake it up and get it running again.
+  - But warning: wait() and notify() must be called from within a synchronized context.  A thread can't invoke wait() or notify() unless it owns that object's lock.
+
+  class c {
+    public static void main(String[] args) {
+      ThreadB b = new ThreadB();
+      b.start();
+
+      // acquires lock on b b/c otherwise couldn't call b.wait()
+      synchronized(b) {
+        try {
+          System.out.println("waiting for b to complete");
+          b.wait(); // releases lock on b and waits for some other code that has a lock on b to call notify()
+          // code is now blocked until it is given the lock back from notify()
+          // but if there is other code inside the synchronized block after notify() that code will be run first before it gets sent back here
+        } catch (InterruptedException e) {
+          System.out.println("Total is: " + b.total);
+        }
+      }
+    }
+  }
+
+  class ThreadB extends Thread {
+    int total;
+
+    public void run() {
+      synchronized(this) {
+        for (int i = 0; i < 100; i++) {
+          total += i;
+        }
+        // usually want to use notifyAll() b/c notify() will only notify one thread and it is not guaranteed to be the thread you are trying to target
+        notify();
+        // if other code happens here it will be run before the wait() is executed in ThreadA
+      }
+    }
+  }
+
+
+Possible Problems:
+  - notifyAll() or notify() could happen before wait() and then the thread will be waiting forever
+  - one way to handle this is to put a loop that checks on a conditional and only waits if it needs to
+
+  class Operator extends Thread {
+    Machine machine = new Machine();
+    public void run() {
+      while(true) {
+        // constantly get shapes from user
+        Shape shape = getShapeFromUser();
+        MachineInstructions job = calculateNewInstructionsForShape(shape);
+        machine.addJob(job);
+      }
+    }
+  }
+
+  class Machine extends Thread {
+    List<MachineInstructions> jobs = new ArrayList<MachinesInstructions>();
+
+    public void addJob(MachineInstructions job) {
+      // can put a lock on any object, doesn't always have to be a class, in this case it is an ArrayList
+      synchronized(jobs) {
+        jobs.addJob(job);
+        jobs.notify();
+      }
+    }
+
+    public void run() {
+      // constantly listening to see if there are any new jobs passed
+      while(true) {
+        // listening to same lock
+        synchronized(jobs) {
+          // only wait while jobs is empty, when we already have a job we don't want to wait b/c we need to process that job, when we have no jobs to process we want to hibernate this thread until the next notify()
+          // in this use case any time the thread is woken up it will always be given a job but there are times the JVM wakes up thread on its own for no good reason so we can't expect jobs.notify() to be the only person to wake this thread up.  As a result it is always a good idea to add these extra checks
+          while(jobs.isEmpty()) {
+            try {
+              jobs.wait();
+            } catch(InterruptedException ie) {
+
+            }
+          }
+          // now we know jobs is not empty
+          MachineInstructions mi = jobs.remove(0);
+          // send machine steps to hardware
+        }
+      }
+    }
+  }
 
 
 
