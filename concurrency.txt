@@ -1,0 +1,55 @@
+
+java.util.concurrent
+
+  - provides high-level APIs that can use to support multi-threading
+  - usually the low level Thread, Runnable, wait() notify() is too primitive for most applications and often developers find they need to create higher level implementations.  java.util.concurrent provides some of these higher level APIs so developers don't have to build them
+
+  - Apply Atomic Variables and Locks
+
+    - ATOMIC: java.util.concurrent.atomic
+      - enabled multi-threaded applications to safely access individual variables without locking
+      - values can be modified atomically
+      - for example say you need to increment a variable from multiple different threads and then get the count returned.  myVar++ may seem like is happening atomically but internally Java usually translates that into 3 execution steps.
+      - so we use AtomicInteger instead
+
+      public class Counter {
+          private AtomicInteger count = new AtomicInteger();
+          public void increment() {
+            count.getAndIncrement(); // atomic operation instead of count++
+          }
+          public int getValue() {
+            return count.intValue();
+          }
+      }
+
+      - CAS (Compare and Swap) is what atomic processes are often called. Most CPUs have a set of CAS instructions for executions like variable incrementing, etc.
+
+
+    - LOCKS: java.util.concurrent.locks
+      - locking framework that creates locking behavior similar to Java's synchronized keyword
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
