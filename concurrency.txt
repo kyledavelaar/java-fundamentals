@@ -27,7 +27,69 @@ java.util.concurrent
 
     - LOCKS: java.util.concurrent.locks
       - locking framework that creates locking behavior similar to Java's synchronized keyword
+      - atomic variables work well for making single variables thread safe
+      - but if you have two or more related variables then locks are the best way to go
+        - for example video game character has gold coins in backpack and want to deposit them to a vault.  Need to track coins in vault and coins in backpack.
+        - here you'd create two methods, one for depositing coins in the vault, and one for getting the character's wealth. You should never be able to do both of these methods at the same time.
+      - java.util.concurrent.locks provides:
+        - ability to duplicate traditional synchronized blocks
+        - non-block scoped locking: obtain a lock in one method and release it in another
+        - multiple wait/notify pools per lock, threads can select which pool they wait on
+        - ability to attempt to acquire a lock and if fails do a different action
+        - multiple reader, single writer lock implementations
+      - java.util.concurrent.locks.ReentrantLock
+        - the implementation of the locks interface classes
 
+        Lock lock = new ReentrantLock();
+        lock.lock();
+        try {
+          // do locked work
+        } finally {
+          lock.unlock(); // must manually release lock
+        }
+
+      - one of most powerful features is lock.tryLock() which tries without waiting b/c in standard lock implementation a thread can be blocked forever while waiting for a lock to become available
+
+        Lock lock = new ReentrantLock();
+        boolean locked = lock.tryLock(3, TimeUnit.SECONDS);
+        if (locked) {
+          try {
+            // do locked work
+          } finally {
+            lock.unlock(); // must manually release lock
+          }
+        }
+      - another benefit of tryLock is deadlock avoidance b/c in traditional locking implementations you have to acquire locks in the same order in all threads
+      - for example this would result in deadlock
+
+        Object o1 = new Object();
+        Object o2 = new Object();
+
+        synchronized (o1) {
+          // thread a could pause here
+          synchronized(o2)
+        }
+
+        synchronized(o2) {
+          // thread b would get stuck here
+          synchronized(o1)
+        }
+
+      - but with ReentrantLock
+
+        Lock l1 = new ReentrantLock();
+        Lock l2 = new ReentrantLock();
+        boolean aq1 = l1.tryLock();
+        boolean aq2 = l2.tryLock();
+        try {
+          if (aq1 && aq2) {
+            // do work
+          }
+        } finally {
+          // NEVER try to unlock a lock unless you know you have the lock
+          if (aq2) l2.unlock();
+          if (aq1) l1.unlock();
+        }
 
 
 
