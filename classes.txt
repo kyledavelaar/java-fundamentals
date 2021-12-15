@@ -45,7 +45,7 @@ NON-ACCESS MODIFIERS
   - synchronized:
     - accessible by only one thread at a time
     - can only be applied to methods
-  - native:
+  - native:s
     - method implemented in other code/language, like C.  And cannot be changed.
   - static:
     - belongs to a type, not an instance.  class static methods don't need the class to be instantiated to be used.  And when you instantiate the class, you are not creating a new method each time.  Since it is static it is only created once for all instantiations of the class.

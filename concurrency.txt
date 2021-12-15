@@ -91,6 +91,83 @@ java.util.concurrent
           if (aq1) l1.unlock();
         }
 
+    - CONDITION:
+      - java.util.concurrent.locks.Condition (interface)
+      - an interface that's a modern replacement of the traditional wait(), notify()
+      // In Thread1
+        Lock lock = new ReentrantLock();
+        Condition blockingPoolA = new lock.newCondition();
+        lock.lock();
+        try {
+          blockingPoolA.await(); // wait here, lock will be reacquired
+          // once lock acquired from above line, we do some work
+        } catch (InterruptedException e) {
+          // interrupted during await()
+        } finally {
+          lock.unlock();  // must manually release lock
+        }
+
+
+      // In another thread (Thread2) you signal that the lock is available
+        lock.lock();
+        try {
+          // work
+          blockingPoolA.signalAll();  // wake all awaiting threads
+        } finally {
+          lock.unlock();
+        }
+
+      - why use condition over traditional wait/notify?
+        - multiple conditions can exist for a lock
+        - a condition is basically a waiting/blocking pool for a thread
+        - by having multiple conditions you are categorizing the threads waiting on a lock and thus can wake up a subset of those threads instead of all of them if you want
+        - Conditions can also be used when you can't use a BlockingQueue to coordinate the activities of two or more threads
+
+        Lock lock = new ReentrantLock();
+        Condition blockingPoolA = new lock.newCondition();
+        Condition blockingPoolB = new lock.newCondition();
+
+    - ReentrantReadWriteLock
+      - Allows multiple threads to concurrently update or read an object in a safe way
+
+        ReentrantReadWriteLock rwl = new ReentrantReadWriteLock();
+        Lock readLock = rwl.readLock();
+        Lock writeLock = rwl.writeLock();
+
+      - the two locks above are a matched set, one cannot be held at the same time as the other (by different threads)
+      - multiple threads can hold the read lock but only one thread can hold the write lock at a time
+
+      public class MaxValueCollection {
+        private List<Integer> integers = new ArrayList<>();
+        private ReentrantReadWriteLock rwl = new ReentrantReadWriteLock();
+
+        public void add(Integer i) {
+          rwl.writeLock().lock(); // so can only add one at a time
+          try {
+            integers.add(i);
+          } finally {
+            rwl.writeLock().unlock();
+          }
+        }
+
+        public int findMax() {
+          rwl.readLock().lock(); // lock that many threads can access
+          try {
+            return Collections.max(integers); // static method on Collections class
+          } finally {
+            rwl.readLock.unlock();
+          }
+        }
+      }
+
+      - if you didn't want to use locks like shown above you can also just use a thread safe collection
+
+
+
+
+
+
+
 
 
 
