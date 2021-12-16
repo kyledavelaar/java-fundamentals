@@ -162,6 +162,30 @@ java.util.concurrent
 
       - if you didn't want to use locks like shown above you can also just use a thread safe collection
 
+  - java.util.concurrent
+    - using synchronization (synchronized blocks) to safeguard collections in multi-threaded environments can result in a performance bottleneck
+    - java.util.concurrent provide thread safe collections that do not have the same performance problems
+    - thus if you have a collection that will be concurrently accessed you should always use the collections from java.util.concurrent
+
+    - CopyOnWriteArrayList
+      - read only immutable objects are always thread safe
+      - when the list is changed it always returns a new array
+      - it does this through the use of an Iterator, which keeps track of what value is at what key
+      - The iterator is created before it begins changing the object and the initial Iterator mappings (the old unchanged object that you began the loop with) don't change even if another thread changes a value while another thread is also going through the object
+      - forEach loop uses an iterator so it is safe to use on a copy-on-write collection. But traditional loops are not
+        - for(Object o: collection) {} // ok
+        - for(int i = 0; i < collection.size(); i++) {} // bad
+      - CopyOnWriteArrayList and CopyOnWriteArraySet are the two collections you'll use when data set is relatively small and the number of read operations and traversals out-weighs write operations
+      - modifications to the collection (not the internal items within) are expensive because the entire collection must be copied/duplicated for each modification.
+      - be careful...a thread safe collection makes the collection thread safe but not the items within the collection.  so you'll need to use atomic variables, locks, synchronized code blocks or immutable read only objects for those.
+
+    - Concurrent Collections
+      - ConcurrentHashMap
+      - ConcurrentLinkedDeque
+      - ConcurrentLinkedQueue
+      - ConcurrentSkipListMap
+      - ConcurrentSkipListSet
+
 
 
 
