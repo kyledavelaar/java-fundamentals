@@ -180,13 +180,63 @@ java.util.concurrent
       - be careful...a thread safe collection makes the collection thread safe but not the items within the collection.  so you'll need to use atomic variables, locks, synchronized code blocks or immutable read only objects for those.
 
     - Concurrent Collections
-      - ConcurrentHashMap
-      - ConcurrentLinkedDeque
-      - ConcurrentLinkedQueue
-      - ConcurrentSkipListMap
-      - ConcurrentSkipListSet
+      - Iterator is a bit different for these b/c it is not always what it was when the iterator was created.  There are some instances where it can be changed afterward.
+      - thus we call these weakly consistent collections.
+      - size() method for example might return close to what the size is but might not be the exact amount
+      - why would you use this then?  b/c you are okay with a little inconsistency (as long as the values you are looking for are close to what they actual are) and you need better performance than Copy-on-Write where the entire collection is duplicated each time
+      - Types of collections
+        - ConcurrentHashMap
+        - ConcurrentLinkedDeque
+        - ConcurrentLinkedQueue
+        - ConcurrentSkipListMap
+        - ConcurrentSkipListSet
 
+      - ConcurrentHashMap and ConcurrentSkipListMap implement the ConcurrentMap interface.  ConcurrentMap enhances the Map interface by adding atomic putIfAbsent, remove and replace methods. For example putIfAbsent behind the scenes does this:
+        if (!map.contains(key)) {
+          return map.put(key, value);
+        } else {
+          return map.get(key);
+        }
 
+      - ConcurrentSkipListSet and ConcurrentSkipListMap are sorted so they require a Comparable or Comparator interface for ordering
+
+  BlockingQueue Interface
+    - copy-on-write and the collections above are all about multiple threads interacting with a shared object/data.
+    - blocking queues are for transferring data between two threads
+    - one or more threads will wait until data is provided
+    - use case: producer-consumer scenario, one thread produces data and puts it in a blocking queue, another thread waits for data to be put in queue and when it arrives it consumes the data.  The queue is the intermediary between the producer and consumer.
+    - BlockingQueue implementations
+      - ArrayBlockingQueue
+      - LinedBlockingDeque
+      - LinkedBlockingQueue
+      - PriorityBlockingQueue
+      - DelayQueue
+        - can only consume from queue until after a delay period
+      - SynchronousQueue
+        - queue with size capacity of 0 so once a thread tries to add something to it, the queue will block until another thread makes a call to remove an item from it
+      - LinkedTransferQueue
+        - typically the queue used b/c it can do almost everything all the other queues can do and is more efficient(new in Java 7)
+        - cannot be bound by size so can't give it a size limit
+    - A blocking collection may cause a thread to block until another thread calls the corresponding method, for example, one thread can't take() until another thread inserts an element
+    - Blocking Collection Methods
+      - add(E e) inserts an object
+      - offer(E e) inserts an object, will return false if queue is full
+      - put(E e) inserts an object, will block until space in queue available
+      - offer(E e, long timeout, TimeUnit unit) inserts an object only if can be done in the allotted time
+      - remove(Object o) removes the object if it was found in the queue
+      - poll(long timeout, TimeUnit unit) removes the first object in the queue (the head) if the queue has an element in the alloted time
+      - take() removes the first object in the queue (the head) and blocks until it becomes available
+      - element() returns the first object in a queue without removing it
+      - peek() returns the first object in a queue without removing it
+    - BoundedQueues
+      - bound to a set size and block if at that capacity
+      - ArrayBlockingQueue, LinkedBlockingDeque, LinkedBlockingQueue are all bounded queues
+
+        BlockingQueue<Integer> bq = new ArrayBlockingQueue<>(1);  // can only hold 1 value
+        try {
+          bq.add(11);
+          bq.add(99); // will block until first integer removed from array b/c array can only hold one item (bound by size)
+        } catch (InterruptedException e) {}
 
 
 

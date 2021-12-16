@@ -1,0 +1,146 @@
+
+Executors and ThreadPools help meet the same needs that threads do:
+  1. create and schedule some code for execution
+  2. optimize the execution of that code by utilizing all the cores that a machine has available to run them on
+
+With traditional threading you need to handle these yourself.  Executors and ThreadPools handle these for you.
+
+
+Executor
+  - alternative way to start threads
+  - considered high-level thread programming compared to implementing Threads directly which would be low-level
+
+What happens when you start a new thread:
+  1. identify a task that forms some sort of self-contained work. Usually this is put in a class that implements the Runnable interface
+  2. You execute the Runnable either by
+    a) call run() synchronously without staring the thread (not what you would normally do)
+      Runnable r = new MyRunnableTaskClass();
+      r.run(); // executed by calling thread
+    b) call the method indirectly (what is typically done) so that it is done asynchronously and does not block the thread
+      Runnable r = new MyRunnableTaskClass();
+      Thread t1 = new Thread(r);
+      t1.start(); // thread start() calls the thread.run();
+
+Thread Limitation example:
+  - Imagine online chess engine that can play against human players
+  - each human would have its own thread as it interacts with the chess engine
+  - but what if we have 10,000 players on simultaneously? we can't have 10,000 threads running at a time on a single machine.  the underlying operating system's task scheduler would only allow a portion of them to run at one time. Typically around 8 to 16 depending on the number of Cores.
+  - so you could have 10,000 threads but the overall system would be very very slow
+  - threads are also expensive for resources (when it starts, when the task scheduler switches over from one to another it needs to save the state of the thread, etc.)
+  - Also many operating systems have limitations on how many threads can be spawned
+
+Solution:
+  - if we want to limit the number of threads running to only what our system can handle we need to decouple the tasks that are performed (those in a class that extends Runnable) from our thread creation and starting.
+  - java.util.concurrent.Executor can help do this
+
+    Runnable r = new MyRunnableTaskClass();
+    Executor ex = new MyThreadExecutor(); // allows you to choose how tasks will be executed/run (on their own thread, on a shared thread, etc.).  you just need to implement the Executor interface
+    ex.execute(r); // executes run() in the Runnable instance
+
+  - unlike instantiating a new Thread() and calling thread.start() an Executor can handle multiple thread approaches
+    - not starting any threads at all (task in run in the calling thread)
+    - starting a new thread for each task
+    - queueing tasks and processing them with only enough threads to keep the CPU utilized (not over maxed)
+
+  public class SameThreadExecutor implements Executor {
+    @Override
+    public void execute(Runnable command) {
+      command.run();  // caller waits b/c only one thread for all tasks
+    }
+  }
+
+  public class NewThreadExecutor implements Executor {
+    @Override
+    public void execute(Runnable command) {
+      Thread t = new Thread(command); // new thread created for every task
+      t.start();
+    }
+  }
+
+  - now submission of task is decoupled from the execution of the task so you have the freedom to determine how many threads are created
+
+  - There are pre-built Executors (a factory of Executor implementations) that you can use so you don't always have to create your own.  Below is an example of one.
+
+    Runnable r = new MyRunnableTaskClass();
+    ExecutorService ex = Executors.newCachedThreadPool();
+    ex.execute(r);
+
+  - Executor ex = Executors.newCachedThreadPool();
+    - creates new threads only as needed and will reuse cached threads when they become available.  threads idle for 60 seconds are removed.  But warning, using this can still cause thread overload
+
+  - ExecutorService ex = Executors.newFixedThreadPool(4);
+    - most common Executor used b/c don't have to worry about overloading system
+    - when run out of threads, tasks are put in a queue until a thread becomes available
+    - size is typically based on number of processors your system has
+      Runtime rt = new Runtime.getRuntime();
+      int cpuCount = rt.availableProcessors();s
+
+  - Try not to use wait() and notify() when using Executors b/c executors are already taking care of this for you and your calls to wait(), notifyAll() may interfere with the Executor
+
+  - Callable Interface:
+    - In examples above we've used the Runnable interface to run our tasks but a more flexible way to do this is with the Callable interface
+    - Callable allows results to be returned after execution (Runnable doesn't allow this)
+    - java.util.concurrent.Future is what is used to get the result of the async task that was run via a Callable
+
+    import java.util.concurrent.Callable;
+    import java.util.concurrent.ThreadLocalRandom;
+
+    public class MyCallable implements Callable<Integer> {
+      @Override // overriding the call method in Callable and have it return an Integer
+      public Integer call() {
+        // get a random number between 1 and 11
+        int count = ThreadLocalRandom.current().nextInt(1, 11);
+        for (int i = 0; i <= count; i++) {
+          System.out.println("running... " + i);
+        }
+        return count;
+      }
+    }
+
+    - a Future reference will be returned from class above
+    - when you use the Future to get the result or status you need to account for a few exceptions
+      - InterruptedException
+        - thread calling Future's get() method is interrupted before a result can be returned
+      - ExecutionException
+        - raised when an exception was thrown during the Callable's call() method
+
+    Callable<Integer> c = new MyCallable();
+    ExecutorService ex = Executors.newCachedThreadPool();
+    Future<Integer> f = ex.submit(c); // finishes async in the future
+    try {
+      Integer v = f.get(); // blocks until get it
+      System.out.println("Ran " + v);
+    } catch (InterruptedException | ExecutionException iex) {
+      System.out.println("fail");
+    } finally {
+      ex.shutdownNow(); // always manually shut down to free up resources
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
