@@ -118,6 +118,86 @@ Solution:
 
 
 
+Fork Join
+  - a highly specialized ExecutorService
+  - other ExecutorService instances are centered around submitting multiple tasks to an ExecutorService so that the ExecutorService can use the correct amount of threads that the CPU can support.
+  - Fork Join is used most often for one really big tasks...filling up a 100,000,000 item array with random values for example. (or for a few really big tasks)
+  - Fork Join is based on divide and conquer.  Divide a large task up into many smaller subTasks and use recursion to keep repeating these smaller sub tasks until the entire task is done.
+  - you keep splitting the tasks up until all your CPU is utilized
+  - Anytime you want to perform the same action on a large collection, consider using fork-join.
+  - Sometimes the amount of effort/resources it takes to split the main task into smaller tasks is not worth the benefits.  In these cases it is better to just process the main task as one big task.
+  - Another thing to consider is how long each subTask will take.  Even if there are only a few subTasks that a big task could be divided into, if each of those subTasks take a really long time, then fork-join would be a good solution.
+  - main methods: fork() join() compute()
+  - each thread in the pool has its own queue (this is different from the other ExecutorService implementations that only use one shared task queue for all their threads)
+
+  import java.util.concurrent.ForkJoinPool;
+  import java.util.concurrent.ForkJoinTask;
+
+  // using no-arg constructor will auto figure out the number of available processors for you.  You can add that value in manually if you want by passing an int into the constructor to set how many threads you want running in parallel.
+  ForkJoinPool fjp = new ForkJoinPool();
+
+
+  class ForkJoinPaintTask {
+    compute() {
+      if (fenceSectionIsSmall()) {
+        paintSection();
+      } else {
+        ForkJoinPaintTask leftHalf = getLeftHalfOfFence();
+        leftHalf.fork(); // adds task to queue
+        ForkJoinPaintTask rightHalf = getRightHalfOfFence();
+        rightHalf.compute(); // work on this task right now
+        leftHalf.join(); // halt code here until queued task (leftHalf) has completed processing
+      }
+    }
+  }
+
+  ForkJoinTask is an abstract class that needs to be extended.
+    - RecursiveAction
+      - a ForkJoinTask that does not need a result returned
+      - must implement `protected abstract void compute()`
+
+  public class RandomIntRecursiveAction extends RecursiveAction {
+    private static final int THRESHOLD =  10000;
+    private int[] data;
+    private int start;
+    private int end;
+
+    public RandomIntRecursiveAction(int[] data, int start, int end) {
+      this.data = data;
+      this.start = start;
+      this.end = end;
+    }
+
+    @Override
+    protected void compute() {
+      if (end - start <= THRESHOLD) {
+        // we have a manageable amount of work so do it (the task)
+        for (int i = start; i < end; i++) {
+          data[i] = ThreadLocalRandom.current().nextInt();
+        }
+      } else {
+        // task too big so split it
+        int halfWay = ((end - start) / 2) + start;
+        RandomIntRecursiveAction a1 = new RandomIntRecursiveAction(data, start, halfWay);
+        a1.fork(); // queue left half
+        RandomIntRecursiveAction a2 = new RandomIntRecursiveAction(data, halfWay, end);
+        a2.compute();  // start working on this half immediately
+        a1.join(); // hold here until a1 is also complete
+
+        // can also use helper function to avoid having to call fork(), compute(), join() like we did above.  Can just do this:
+        // invokeAll(a2, a1);
+      }
+    }
+  }
+
+  // to start our forkJoin do this:
+
+  public static void main(String[] args) {
+    int[] data = new int[10_000_000];
+    ForkJoinPool pool = new ForkJoinPool();
+    RandomIntRecursiveAction action = new RandomIntRecursiveAction(data, 0, data.length);
+    pool.invoke(action);
+  }
 
 
 
