@@ -156,48 +156,102 @@ Fork Join
       - a ForkJoinTask that does not need a result returned
       - must implement `protected abstract void compute()`
 
-  public class RandomIntRecursiveAction extends RecursiveAction {
-    private static final int THRESHOLD =  10000;
-    private int[] data;
-    private int start;
-    private int end;
+      public class RandomIntRecursiveAction extends RecursiveAction {
+        private static final int THRESHOLD =  10000;
+        private int[] data;
+        private int start;
+        private int end;
 
-    public RandomIntRecursiveAction(int[] data, int start, int end) {
-      this.data = data;
-      this.start = start;
-      this.end = end;
-    }
-
-    @Override
-    protected void compute() {
-      if (end - start <= THRESHOLD) {
-        // we have a manageable amount of work so do it (the task)
-        for (int i = start; i < end; i++) {
-          data[i] = ThreadLocalRandom.current().nextInt();
+        public RandomIntRecursiveAction(int[] data, int start, int end) {
+          this.data = data;
+          this.start = start;
+          this.end = end;
         }
-      } else {
-        // task too big so split it
-        int halfWay = ((end - start) / 2) + start;
-        RandomIntRecursiveAction a1 = new RandomIntRecursiveAction(data, start, halfWay);
-        a1.fork(); // queue left half
-        RandomIntRecursiveAction a2 = new RandomIntRecursiveAction(data, halfWay, end);
-        a2.compute();  // start working on this half immediately
-        a1.join(); // hold here until a1 is also complete
 
-        // can also use helper function to avoid having to call fork(), compute(), join() like we did above.  Can just do this:
-        // invokeAll(a2, a1);
+        @Override
+        protected void compute() {
+          if (end - start <= THRESHOLD) {
+            // we have a manageable amount of work so do it (the task)
+            for (int i = start; i < end; i++) {
+              data[i] = ThreadLocalRandom.current().nextInt();
+            }
+          } else {
+            // task too big so split it
+            int halfWay = ((end - start) / 2) + start;
+            RandomIntRecursiveAction a1 = new RandomIntRecursiveAction(data, start, halfWay);
+            a1.fork(); // queue left half
+            RandomIntRecursiveAction a2 = new RandomIntRecursiveAction(data, halfWay, end);
+            a2.compute();  // start working on this half immediately
+            a1.join(); // hold here until a1 is also complete
+
+            // can also use helper function to avoid having to call fork(), compute(), join() like we did above.  Can just do this:
+            // invokeAll(a2, a1);
+          }
+        }
       }
-    }
-  }
 
-  // to start our forkJoin do this:
+      // to start our forkJoin do this:
 
-  public static void main(String[] args) {
-    int[] data = new int[10_000_000];
-    ForkJoinPool pool = new ForkJoinPool();
-    RandomIntRecursiveAction action = new RandomIntRecursiveAction(data, 0, data.length);
-    pool.invoke(action);
-  }
+      public static void main(String[] args) {
+        int[] data = new int[10_000_000];
+        ForkJoinPool pool = new ForkJoinPool();
+        RandomIntRecursiveAction action = new RandomIntRecursiveAction(data, 0, data.length);
+        pool.invoke(action);
+      }
+
+    - Recursive Task (Another way to extend ForkJoinTask)
+      - when you need a result returned
+      - you must implement the compute() method
+      - example below finds largest value in array
+      - once again make sure to not create new arrays but just subdivide
+
+      public class FindMaxValue extends RecursiveTask<Integer> {
+        private static final int THRESHOLD = 10000;
+        private int[] data;
+        private int start;
+        private int end;
+
+        public FindMaxValue(int[] data, int start, int end) {
+          this.data = data;
+          this.start = start;
+          this.end = end;
+        }
+
+        @Override
+        // return type must match generic <Integer>
+        protected Integer compute() {
+          if (end - start <= THRESHOLD) {
+            int position = 0;
+            for (int i = start; i < end; i++) {
+              if (data[i] > data[position]) {
+                position = i;
+              }
+            }
+            return position;
+          } else {
+            // chunk too big so split it
+            int halfway = ((end - start) / 2) + start;
+            FindMaxValue task1 = new FindMaxValue(data, start, halfWay);
+            FindMaxValue task2 = new FindMaxValue(data, halfWay, end);
+            int position2 = task2.compute();
+            int position1 = task1.join();
+            return data[position1] > data[position2] ? data[position1] : data[position2];
+          }
+        }
+      }
+
+      public static void main(String[] args) {
+        int[] data = new int[10_000_000];
+        ForkJoinPool fjp = new ForkJoinPool();
+        // populate data with random numbers
+        RandomIntRecursiveAction action = new RandomIntRecursiveAction(data, 0, data.length);
+        fjp.invoke(action);
+        FindMaxValue findMaxValueTask = new FindMaxValue(data, 0, data.length);
+        Integer maxVal = fjp.invoke(findMaxValueTask);
+        System.out.println("max val: " + maxVal);
+      }
+
+
 
 
 
